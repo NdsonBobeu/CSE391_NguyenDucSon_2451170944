@@ -60,3 +60,40 @@
   1. Đây là Anti-pattern lỗi thời từ bản HTML 4 . Bảng sinh ra chỉ để chứa dữ liệu tabular có hàng và cột mang ý nghĩa.
   2. Phá hỏng Accessibility vì Screen Reader sẽ đọc layout như một bảng dữ liệu, khiến người dùng bị bối rối.
   3. Sẽ bị lỗi hoặc vỡ layout nếu người dùng cố resize hoặc sort các cột dữ liệu (nên dùng Flexbox hoặc CSS Grid để thay thế).
+
+### PHẦN C — SUY LUẬN (20 điểm)
+
+### Câu C1 (10đ) — Thiết kế cấu trúc 
+
+**Nguồn tham chiếu: `04_visible_part_html.md` - Phần 3, `05_tables_hyperlinks.md` - Phần 3.**
+
+```html
+<header> <!-- Bọc phần trên cùng (logo, search) của toàn trang --> </header>
+<nav aria-label="breadcrumb"> <!-- Điều hướng dạng chuỗi Trang chủ > Sản phẩm --> </nav>
+<main> <!-- Vùng nội dung duy nhất của trang -->
+    <article> <!-- Đóng gói toàn bộ sản phẩm vì nó là nội dung độc lập -->
+        <section id="gallery">
+            <!-- Chứa 5 ảnh sản phẩm. Dùng <figure> bao quanh <img> -->
+        </section>
+        <section id="info">
+            <!-- Tiêu đề <h1>, mô tả và giá -->
+        </section>
+        <section id="specs">
+            <!-- Bảng thông số dùng <table>, <thead>, <tbody> -->
+        </section>
+        <section id="reviews">
+            <!-- Chứa các bình luận, mỗi bình luận có thể là 1 <article> nhỏ -->
+        </section>
+    </article>
+</main>
+<aside> <!-- Sản phẩm tương tự là phần phụ, nằm bên cạnh hỗ trợ main --> </aside>
+<footer> <!-- Chứa chính sách, liên hệ cuối trang --> </footer>
+```
+
+#### Câu C2 (10đ) — So sánh & Tranh luận
+
+**Nguồn tham chiếu: 00_design_thinking_layout.md - Phần 3 & 7, 04_visible_part_html.md - Phần 2.**
+     
+     * Phản biện: Việc lạm dụng thẻ <div> cho mọi thứ đi ngược lại nguyên lý của HTML5. Về mặt kỹ thuật, thẻ <div> chỉ là container trung tính, không giúp ích gì cho SEO vì Google không phân biệt được đâu là nội dung quan trọng. Về mặt Accessibility, trình đọc màn hình phụ thuộc vào semantic tags để điều hướng, nếu thiếu chúng, người khiếm thị không thể dùng form hay nhảy qua các vùng trang.
+    * Ví dụ chứng minh: Khi bao bọc thẻ sản phẩm bằng <article>, bạn cho Google Bot biết đây là một thực thể thông tin độc lập, có thể lấy ra để chia sẻ, từ đó index tốt hơn.
+    * Trường hợp <div> phù hợp: Bạn chỉ nên dùng <div> làm thẻ bao bọc (wrapper) khi cần nhóm nhiều thành phần lại với nhau nhằm mục đích chia layout bằng CSS (như thiết lập Flexbox hoặc Grid) mà không có thẻ semantic nào như <section> hay <aside> thích hợp hơn.
