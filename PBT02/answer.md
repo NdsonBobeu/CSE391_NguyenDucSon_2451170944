@@ -11,7 +11,7 @@
     7.type="checkbox": Ô vuông chọn có/không / Tự validate bằng required / Dùng để tick chọn "Đồng ý với điều khoản dịch vụ".
     8.type="radio": Hình tròn chọn một trong nhiều lựa chọn / Tự validate bằng required / Dùng để chọn phương thức thanh toán (COD/Chuyển khoản).
     9.type="file": Nút bấm để mở hộp thoại chọn file / Tự validate qua accept (loại file), multiple / Dùng để khách hàng tải lên ảnh biên lai thanh toán.
-    10.type="search": Ô tìm kiếm có thêm nút "✕" để xóa nhanh / Không tự động validate / Dùng cho thanh tìm kiếm sản phẩm.
+    10.type="search": Ô tìm kiếm có thêm nút "X" để xóa nhanh / Không tự động validate / Dùng cho thanh tìm kiếm sản phẩm.
 
 ### Câu A2 (5đ) — Validation Attributes 
 
