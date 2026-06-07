@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Game Đoán Số</title>
+    <style>
+        /* ===== RESET & FONT ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f2027 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== CARD CHÍNH ===== */
+        .card {
+            background: #ffffff10;
+            backdrop-filter: blur(10px);
+            border: 1px solid #ffffff25;
+            border-radius: 20px;
+            padding: 40px;
+            width: 420px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        /* ===== TIÊU ĐỀ ===== */
+        h1 {
+            color: #fff;
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+        }
+
+        /* ===== THANH TIẾN TRÌNH ===== */
+        .progress-bar {
+            background: #ffffff15;
+            border-radius: 10px;
+            height: 10px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #06b6d4);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        #attempts {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 25px;
+        }
+
+        /* ===== KHU VỰC NHẬP ===== */
+        #input-area {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 20px;
+            font-size: 1.3rem;
+            text-align: center;
+            background: #ffffff10;
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            color: #fff;
+            outline: none;
+            margin-bottom: 12px;
+            letter-spacing: 4px;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #06b6d4;
+            background: #ffffff18;
+        }
+
+        input[type="text"]::placeholder {
+            color: #64748b;
+            letter-spacing: 0;
+        }
+
+        /* ===== NÚT BẤM ===== */
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        #btn-doan {
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            color: #fff;
+        }
+
+        #btn-doan:hover {
+            opacity: 0.9;
+        }
+
+        #btn-choi-lai {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #fff;
+            display: none; /* Ẩn ban đầu */
+            margin-top: 12px;
+        }
+
+        #btn-choi-lai:hover {
+            opacity: 0.9;
+        }
+
+        /* ===== KẾT QUẢ & GỢI Ý ===== */
+        #result {
+            font-size: 1.1rem;
+            font-weight: 600;
+            min-height: 28px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+        }
+
+        #hint {
+            font-size: 0.9rem;
+            min-height: 22px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        /* ===== HƯỚNG DẪN ===== */
+        .rules {
+            background: #ffffff08;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .rules p {
+            color: #94a3b8;
+            font-size: 0.82rem;
+            line-height: 1.7;
+        }
+
+        .rules strong {
+            color: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>🎯 Đoán Số</h1>
+    <p class="subtitle">Mình đang nghĩ một số từ <strong style="color:#06b6d4">1</strong> đến <strong style="color:#06b6d4">100</strong>. Bạn đoán được không?</p>
+
+    <!-- Thanh tiến trình lượt -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <p id="attempts">Số lần đã đoán: 0 / 7</p>
+
+    <!-- Kết quả & gợi ý -->
+    <p id="result"></p>
+    <p id="hint"></p>
+
+    <!-- Khu vực nhập số -->
+    <div id="input-area">
+        <input
+            type="text"
+            id="inputSo"
+            placeholder="Nhập số của bạn..."
+            onkeydown="xuLyEnter(event)"
+            autocomplete="off"
+        />
+        <button id="btn-doan" onclick="doanSo()">🔍 Đoán ngay!</button>
+    </div>
+
+    <!-- Nút chơi lại (hiện sau khi kết thúc) -->
+    <button id="btn-choi-lai" onclick="batDauGame()">🔄 Chơi lại</button>
+
+    <!-- Hướng dẫn -->
+    <div class="rules">
+        <p>
+            <strong>📌 Luật chơi:</strong><br>
+            • Nhập số từ 1 đến 100, nhấn nút hoặc Enter<br>
+            • Máy gợi ý <em>cao hơn</em> hay <em>thấp hơn</em><br>
+            • Bạn có <strong>tối đa 7 lượt</strong> để đoán đúng<br>
+            • Đoán trùng số cũ sẽ bị cảnh báo
+        </p>
+    </div>
+</div>
+
+<!-- Nhúng file logic -->
+<script src="guess.js"></script>
+
+<script>
+    // Tự động bắt đầu game khi trang load xong
+    window.onload = function() {
+        batDauGame();
+    };
+
+    // Cập nhật thanh tiến trình theo số lần đoán
+    const originalDoanSo = doanSo;
+    // Patch để cập nhật progress bar sau mỗi lần đoán
+    function doanSo() {
+        originalDoanSo();
+        const fill = document.getElementById("progress-fill");
+        const pct = (soLanDoan / 7) * 100;
+        fill.style.width = pct + "%";
+        // Đổi màu khi gần hết lượt
+        if (soLanDoan >= 5) {
+            fill.style.background = "linear-gradient(90deg, #ef4444, #f97316)";
+        }
+    }
+</script>
+
+</body>
+</html>
